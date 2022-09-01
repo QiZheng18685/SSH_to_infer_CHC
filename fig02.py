@@ -1,0 +1,601 @@
+import os
+import scipy.io as sio
+from os.path import join as pjoin
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
+
+
+f_data4 = pjoin('/Users/qi/Dropbox/Results_chapter1/NEMO_FULL_RECORD_ts.mat')
+mat_trn = sio.loadmat(f_data4)
+sorted(mat_trn.keys())
+
+f_data1 = pjoin('/Users/qi/Dropbox/Results_chapter1/ORAS5_LF_SECS_SSH.mat')
+mat_oras5 = sio.loadmat(f_data1)
+sorted(mat_oras5.keys())
+
+
+nemo_lf_vol = mat_trn['lf_vol_hy']
+oras5_lf_vol = mat_oras5['lf_vol_hy']
+nemo_recon=mat_trn['lf_recon_vol']
+#nemo_lf_bp=mat_trn['lf_bp_hy']
+#nemo_lf_sth=mat_trn['lf_sth_hy']
+
+
+f_data2 = pjoin('/Users/qi/Dropbox/Results_chapter1/ORAS5_RECON_VOL')
+mat_oras2 = sio.loadmat(f_data2)
+sorted(mat_oras2.keys())
+
+nemo_lf_ssh = 100*mat_trn['lf_ssh_hy']
+oras5_lf_ssh = 100*mat_oras5['lf_ssh_hy']
+
+oras5_recon=mat_oras2['lf_recon_vol']
+
+#Ttick=['58','59','60','61','62','63','64','65','66','67','68','69','70','71','72','73','74','75','76','77','78','79','80','81','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16']
+
+#Ttick_oras5=['75','76','77','78','79','80','81','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15']
+    
+T_oras=np.arange(1975, 2015.1, 2)
+T_nemo=np.arange(1958, 2015.1, 2)        
+    
+fig = plt.figure(figsize=[23,20],constrained_layout=True)
+plt.clf()
+widths = [4, 3]
+heights = [2, 2, 2, 2, 2, 2, 2 , 2 , 2, 2]
+spec5 = fig.add_gridspec(ncols=2, nrows=10, width_ratios=widths,
+                        height_ratios=heights, wspace=0.001) 
+
+ax_current = fig.add_subplot(spec5[0,0])
+#---------------------------------------------------------------------   
+
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,0], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,0], "g-", label="Recon VF")
+p3, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,0], "b-", label="NEMO SSH diff")
+
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,0], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,0], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+#p3, = twin2.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_bp[:,0], "g-", label="filtered ssh")
+#twin2.spines.right.set_position(("axes", 1.1))
+#twin2.set_ylabel("BP")
+#twin2.yaxis.label.set_color(p3.get_color())
+ax_current.set_ylim(-0.1, 1.2)
+twin1.set_ylim(-1,5)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#twin2.yaxis.label.set_color(p3.get_color())
+tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+ax_current.set_title('(a) NEMO: Transect 1', pad=7)
+#ax_current.xaxis.set_visible(False)
+plt.setp(ax_current,xticklabels=[])
+#----------------------------------------------------------------------------------------
+#-----------------------------------2-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[0,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,0], "k-", label="ORAS5 VF")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,0], "g-", label="Recon Vf")
+#p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,1], "g-", label="Recon VF")
+p3, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,0], "b-", label="ORAS5 SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,0], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,0], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(-0.1, 1.2)
+twin1.set_ylim(-1,5)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+ax_current.set_title('(k) ORAS5: Transect 1', pad=7)
+plt.setp(ax_current,xticklabels=[])
+#----------------------------------------------------------------------------------------
+#-----------------------------------3-----------------------------------------------
+#---------------------------------------------------------------------------------------
+      
+ax_current = fig.add_subplot(spec5[1,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,1], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,1], "g-", label="Recon VF")
+p3, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,1], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,1], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,1], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+#twin2.spines.right.set_position(("axes", 1.1))
+#twin2.set_ylabel("BP")
+ax_current.set_ylim(0, 2)
+twin1.set_ylim(0,8)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#twin2.yaxis.label.set_color(p3.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+ax_current.set_title('(b) NEMO: Transect 2', pad=7)
+plt.setp(ax_current,xticklabels=[])
+#----------------------------------------------------------------------------------------
+#-----------------------------------4----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[1,1])
+#   if s<8:
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,1], "k-", label="ORAS5 VF")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,1], "g-", label="Recon Vf")
+#p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,0], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,1], "b-", label="ORAS5 SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,1], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,1], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0, 2)
+twin1.set_ylim(0,8)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (m)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+ax_current.set_title('(l) ORAS5: Transect 2', pad=7)
+plt.setp(ax_current,xticklabels=[])
+
+
+ax_current = fig.add_subplot(spec5[2,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,2], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,2], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,2], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,2], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_nemo[:,2], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0, 1.5)
+twin1.set_ylim(0,7)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#twin2.yaxis.label.set_color(p3.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+ax_current.set_title('(c) NEMO: Transect 3', pad=7)
+plt.setp(ax_current,xticklabels=[])
+#----------------------------------------------------------------------------------------
+#-----------------------------------6-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[2,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,2], "k-", label="ORAS5 VF")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,2], "g-", label="Recon Vf")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,2], "b-", label="ORAS5 SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,2], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,2], "b--", label="altimetry SSH diff")
+
+ax_current.set_ylim(0, 1.8)
+twin1.set_ylim(0,7)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+
+ax_current.set_title('(m) ORAS5: Transect 3', pad=7)
+
+plt.setp(ax_current,xticklabels=[])
+#----------------------------------------------------------------------------------------
+#-----------------------------------7-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[3,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,3], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,3], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,3], "b-", label="NEMO SSH diff")
+#p3, = twin2.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_bp[:,3], "g-", label="filtered ssh")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,3], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,3], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+#twin2.spines.right.set_position(("axes", 1.1))
+#twin2.set_ylabel("BP")
+ax_current.set_ylim(0.5,2.2)
+twin1.set_ylim(3,11)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+##twin2.yaxis.label.set_color(p3.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+ax_current.set_title('(d) NEMO: Transect 4', pad=7)
+plt.setp(ax_current,xticklabels=[])
+#----------------------------------------------------------------------------------------
+#-----------------------------------8----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[3,1])
+twin1 = ax_current.twinx()
+
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,3], "k-", label="ORAS5 VF")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,3], "g-", label="Recon Vf")
+#p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,3], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,3], "b-", label="ORAS5 SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,3], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,3], "b--", label="altimetry SSH diff")
+
+ax_current.set_ylim(0.5,2.2)
+twin1.set_ylim(3,11)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(n)ORAS5: Transect 4', pad=7)
+
+#-------------------------------------------------------------------------------------
+
+ax_current = fig.add_subplot(spec5[4,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,4], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,4], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,4], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,4], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,4], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.5,2.2)
+twin1.set_ylim(3,11)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#twin2.yaxis.label.set_color(p3.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(e) NEMO: Transect 5', pad=7)
+
+#----------------------------------------------------------------------------------------
+#-----------------------------------2-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[4,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,4], "k-", label="ORAS5 VF")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,4], "g-", label="Recon Vf")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,4], "b-", label="ORAS5 SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,4], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,4], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.7,2.2)
+twin1.set_ylim(5,12)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(o) ORAS5: Transect 5', pad=7)
+#----------------------------------------------------------------------------------------
+#-----------------------------------3-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[5,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,5], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,5], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,5], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,5], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,5], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.5,3)
+twin1.set_ylim(3,15)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+#twin2.yaxis.label.set_color(p3.get_color())
+plt.setp(ax_current,xticklabels=[])
+
+ax_current.set_title('(f) NEMO: Transect 6', pad=7)
+
+
+#----------------------------------------------------------------------------------------
+#-----------------------------------4----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[5,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,5], "k-", label="ORAS5 VF")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,5], "g-", label="Recon Vf")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,5], "b-", label="ORAS5 SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,5], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,5], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.7,2.5)
+twin1.set_ylim(6,14)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+plt.setp(ax_current,xticklabels=[])
+
+ax_current.set_title('(p) ORAS5: Transect 6', pad=7)
+
+
+ax_current = fig.add_subplot(spec5[6,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,6], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,6], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,6], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,6], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,6], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.5,2.8)
+twin1.set_ylim(3,13)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+#twin2.yaxis.label.set_color(p3.get_color())
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(g) NEMO: Transect 7', pad=7)
+
+
+#----------------------------------------------------------------------------------------
+#-----------------------------------2-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[6,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,6], "k-", label="ORAS5 VF")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,6], "b-", label="ORAS5 SSH diff")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,6], "g-", label="Recon Vf")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,6], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,6], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.5,2.7)
+twin1.set_ylim(4,15)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(q) ORAS5: Transect 7', pad=7)
+#----------------------------------------------------------------------------------------
+#-----------------------------------3-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[7,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,7], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,7], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,7], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,7], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,7], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.7,3)
+twin1.set_ylim(6,13)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+#twin2.set_ylabel("STH")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#twin2.yaxis.label.set_color(p3.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(h) NEMO: Transect 8 ', pad=7)
+#----------------------------------------------------------------------------------------
+#-----------------------------------4----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[7,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,7], "k-", label="ORAS5 VF")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,7], "b-", label="ORAS5 SSH diff")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,7], "g-", label="Recon Vf")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,7], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,7], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(0.7,3)
+twin1.set_ylim(5,12)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+plt.setp(ax_current,xticklabels=[])
+
+ax_current.set_title('(r) ORAS5: Transect 8', pad=7)
+    
+ax_current = fig.add_subplot(spec5[8,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,8], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,8], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,8], "b-", label="NEMO SSH diff")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,8], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,8], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(1,5)
+twin1.set_ylim(3,19)
+#twin2.set_ylabel("STH")
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+#twin2.yaxis.label.set_color(p3.get_color())
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(i) NEMO: Transect 9', pad=7)
+#----------------------------------------------------------------------------------------
+#-----------------------------------2-----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[8,1])
+#   if s<8:
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,8], "k-", label="ORAS5 VF")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,8], "b-", label="ORAS5 SSH diff")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,8], "g-", label="Recon Vf")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,8], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,8], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(3,10)
+twin1.set_ylim(12,24)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(s) ORAS5: Transect 9', pad=7)
+#----------------------------------------------------------------------------------------
+#-----------------------------------3-----------------------------------------------
+#---------------------------------------------------------------------------------------
+      
+ax_current = fig.add_subplot(spec5[9,0])
+twin1 = ax_current.twinx()
+#twin2 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_vol[:,9], "k-", label="NEMO VF")
+p2, = ax_current.plot(np.arange(1958.5,2015.5,1/12),nemo_recon[:,9], "g-", label="Recon VF")
+p2, = twin1.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_ssh[:,9], "b-", label="NEMO SSH diff")
+#p3, = twin2.plot(np.arange(1958.5,2015.5,1/12),nemo_lf_sth[:,9], "c-", label="filtered ssh")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_nemo[:,9], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,9], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(2, 9)
+twin1.set_ylim(5,17)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+#twin2.set_ylabel("STH")
+plt.xlim(1958, 2016)
+plt.xticks(np.arange(1958,2016,2))
+plt.xticks(T_nemo)
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#twin2.tick_params(axis='y', colors=p3.get_color(), **tkw)
+#twin2.yaxis.label.set_color(p3.get_color())
+#plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(j) NEMO: Transect 10', pad=7)
+  
+
+ax_current.set_xlabel("Year")
+#----------------------------------------------------------------------------------------
+#-----------------------------------4----------------------------------------------
+#---------------------------------------------------------------------------------------
+ax_current = fig.add_subplot(spec5[9,1])
+twin1 = ax_current.twinx()
+p1, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_vol[:,9], "k-", label="ORAS5 VF")
+p2, = twin1.plot(np.arange(1975.5,2014.5,1/12),oras5_lf_ssh[:,9], "b-", label="ORAS5 SSH diff")
+p2, = ax_current.plot(np.arange(1975.5,2014.5,1/12),oras5_recon[:,9], "g-", label="Recon Vf")
+#p3, = ax_current.plot(np.arange(1993.5,2021.05,1/12),al_oras5[:,9], "g-", label="reconstructed VF")
+#p4, = twin1.plot(np.arange(1993.5,2021.1,1/12),al_ssh[:,9], "b--", label="altimetry SSH diff")
+#ax_current.legend(loc="upper left")
+#twin1.legend(loc="upper right")
+ax_current.set_ylim(8,20)
+twin1.set_ylim(15,30)
+ax_current.set_ylabel("VF (Sv)")
+twin1.set_ylabel("SSH diff (cm)")
+plt.xlim(1975, 2015)
+plt.xticks(np.arange(1975,2015.1,2))
+plt.xticks(T_oras)
+ax_current.yaxis.label.set_color(p1.get_color())
+#twin1.yaxis.label.set_color(p2.get_color())
+#tkw = dict(size=4, width=1.5)
+#twin1.tick_params(axis='y', colors=p2.get_color(), **tkw)
+#plt.setp(ax_current,xticklabels=[])
+ax_current.set_title('(t) ORAS5: Transect 10', pad=7)
+   
+    
+ax_current.set_xlabel("Year")
+
+fig.savefig('/Users/qi/Dropbox/Results_chapter1/paper_codes/fig02.png',dpi=150, bbox_inches ='tight')
+
+
+
+
+
+
